@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: python -m pytest --cov=copilot_insights --cov-branch --cov-report=term-missing --cov-fail-under=90
+      - run: python -m build
+      - run: copilot-insights --usage examples/usage.ndjson --memberships examples/memberships.ndjson --output-dir out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-insights
+          path: out/
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: copilot-adoption-insights-service:ci
+
