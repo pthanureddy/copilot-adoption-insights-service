@@ -21,5 +21,13 @@ build in clean hosted environments.
 
 ## Hosted verification
 
-Recorded after the published GitHub Actions run completes.
+GitHub Actions run
+[43915174464](https://github.com/pthanureddy/copilot-adoption-insights-service/actions/runs/43915174464)
+completed successfully against commit
+`26d1b74899bdf572f16e24b15696297f71a257dc` on 16 November 2026.
+
+- Test job: dependency install, Ruff lint/format, 28 tests with branch coverage
+  above the 90% gate, package build, CLI report generation, and artifact upload
+  all passed.
+- Container job: Docker Buildx image build passed.
 
